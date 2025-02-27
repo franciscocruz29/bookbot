@@ -4,69 +4,67 @@ of each character (case-insensitive), and then prints a report of the character
 frequencies for alphabetic characters in descending order.
 """
 
-def get_book_text(path: str) -> str:
-    """Read and return the contents of the file specified by the given path."""
-
-    with open(path) as f:
-        return f.read()
-
-
-def get_num_words(text: str) -> int:
-    """Count and return the number of words in the provided text."""
-
-    words = text.split()
-    return len(words)
-
-
-def get_chars_dict(text: str) -> dict[str, int]:
-    """Create a dictionary counting the frequency of each character in the text.
-    The count is case-insensitive (all characters are converted to lowercase)."""
-
-    chars = {}
-    for c in text:
-        lowered = c.lower()
-        if lowered in chars:
-            chars[lowered] += 1
-        else:
-            chars[lowered] = 1
-    return chars
-
-
-def sort_on(d):
-    return d["num"]
-
-
-def chars_dict_to_sorted_list(num_chars_dict: dict[str, int]) -> list[dict[str, int]]:
-    """Convert a character frequency dictionary into a sorted list of dictionaries.
-    Each dictionary in the returned list has the keys "char" and "num".
-    The list is sorted in descending order by the frequency ("num")."""
-
-    sorted_list = []
-    for ch in num_chars_dict:
-        sorted_list.append({"char": ch, "num": num_chars_dict[ch]})
-    sorted_list.sort(reverse=True, key=sort_on)
-    return sorted_list
+from stats import (
+    get_num_words,
+    get_chars_dict,
+    chars_dict_to_sorted_list
+)
 
 
 def main() -> None:
+    """
+    Main entry point of the program. Reads the book, processes its text,
+    and prints a comprehensive analysis report including word count
+    and character frequency statistics.
+
+    Returns:
+        None
+    """
     book_path = "books/frankenstein.txt"
     text = get_book_text(book_path)
     num_words = get_num_words(text)
     chars_dict = get_chars_dict(text)
     chars_sorted_list = chars_dict_to_sorted_list(chars_dict)
+    print_report(book_path, num_words, chars_sorted_list)
 
-    print(f"--- Begin report of {book_path} ---")
-    print(f"{num_words} words found in the document")
-    print()
 
+def get_book_text(path):
+    """
+    Reads and returns the contents of the file specified by the given path.
+
+    Args:
+        path (str): The path to the book file.
+
+    Returns:
+        str: The contents of the file, or an empty string if the file is not found.
+    """
+    try:
+        with open(path) as f:
+            return f.read()
+    except FileNotFoundError:
+        print(f"Error: File '{path}' not found.")
+        return ""
+
+
+def print_report(book_path: str, num_words: int, chars_sorted_list: list[dict[str, int]]) -> None:
+    """
+    Prints a report of the book analysis, including word count and character frequencies.
+
+    Args:
+        book_path (str): The path to the analyzed book file.
+        num_words (int): The total number of words in the book.
+        chars_sorted_list (list[dict[str, int]]): A sorted list of character frequencies.
+    """
+    print("============ BOOKBOT ============")
+    print(f"Analyzing book found at {book_path}...")
+    print("\n----------- Word Count ----------")
+    print(f"Found {num_words} total words")
+    print("\n--------- Character Count -------")
     for item in chars_sorted_list:
-        char = str(item["char"])
-        # Only include alphabetic characters in the report.
-        if not char.isalpha():
+        if not str(item["char"]).isalpha():
             continue
-        print(f"The '{item['char']}' character was found {item['num']} times")
-
-    print("--- End report ---")
+        print(f"{item['char']}: {item['num']}")
+    print("============= END ===============")
 
 
 if __name__ == "__main__":
