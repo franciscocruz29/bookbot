@@ -3,6 +3,7 @@ This script reads a text file, counts the number of words and the frequency
 of each character (case-insensitive), and then prints a report of the character
 frequencies for alphabetic characters in descending order.
 """
+import sys
 
 from stats import (
     get_num_words,
@@ -12,15 +13,10 @@ from stats import (
 
 
 def main() -> None:
-    """
-    Main entry point of the program. Reads the book, processes its text,
-    and prints a comprehensive analysis report including word count
-    and character frequency statistics.
-
-    Returns:
-        None
-    """
-    book_path = "books/frankenstein.txt"
+    if len(sys.argv) != 2:
+        print("Usage: python main.py <book_path>")
+        sys.exit(1)
+    book_path = sys.argv[1]
     text = get_book_text(book_path)
     num_words = get_num_words(text)
     chars_dict = get_chars_dict(text)
