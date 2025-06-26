@@ -17,6 +17,7 @@ def main() -> None:
         print("Usage: python main.py <book_path>")
         sys.exit(1)
     book_path = sys.argv[1]
+
     text = get_book_text(book_path)
     num_words = get_num_words(text)
     chars_dict = get_chars_dict(text)
